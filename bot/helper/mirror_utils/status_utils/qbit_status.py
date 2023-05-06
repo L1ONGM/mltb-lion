@@ -73,7 +73,7 @@ class QbittorrentStatus:
         return self.__info.num_leechs
 
     def uploaded_bytes(self):
-        return f"{get_readable_file_size(self.__info.uploaded)}"
+        return get_readable_file_size(self.__info.uploaded)
 
     def upload_speed(self):
         return f"{get_readable_file_size(self.__info.upspeed)}/s"
@@ -82,7 +82,7 @@ class QbittorrentStatus:
         return f"{round(self.__info.ratio, 3)}"
 
     def seeding_time(self):
-        return f"{get_readable_time(self.__info.seeding_time)}"
+        return get_readable_time(self.__info.seeding_time)
 
     def download(self):
         return self
@@ -103,7 +103,7 @@ class QbittorrentStatus:
     async def cancel_download(self):
         self.__update()
         await sync_to_async(self.__client.torrents_pause, torrent_hashes=self.__info.hash)
-        if self.status() != MirrorStatus.STATUS_SEEDING:
+        if not self.seeding:
             if self.queued:
                 LOGGER.info(f'Cancelling QueueDL: {self.name()}')
                 msg = 'task have been removed from queue/download'
